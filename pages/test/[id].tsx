@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import Layout from '../../components/layout'
+import { Layout } from '../../components/layout'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import fetcher from '../../lib/fetch'
 
-export default function FirstPost() {
+export default function FirstPost() { 
   // this is how we access dynamic routing information 
   // in an otherwise statically rendered page
   const router = useRouter()
@@ -13,7 +13,7 @@ export default function FirstPost() {
 
   // use SWR to fetch more information via API call
   // after basic content loads
-  const { data, error } = useSWR(`/api/test/${id}`, fetcher)
+  const { data, error } = useSWR(`/api/test/${id}`, fetcher);
 
   return (
     <Layout>
