@@ -3,6 +3,17 @@ import Review from '../../../lib/models/review'
 import uuid from '../../../lib/uuid'
 import { ValidationError } from 'sequelize'
 import { formatValidationError } from '../../../lib/errors'
+import auth0 from '../../../lib/auth'
+
+export default auth0.requireAuthentication(async (req: NextApiRequest, res: NextApiResponse) => {
+    if (req.method === "GET") {
+        get(req, res)
+    } else if (req.method === "POST") {
+        post(req, res)
+    } else {
+        res.status(404).json({error: "not found"})
+    }
+})
 
 const get = (req: NextApiRequest, res: NextApiResponse) => {
     Review.findAll().then(
@@ -31,16 +42,5 @@ const post = (req: NextApiRequest, res: NextApiResponse) => {
 
         }
     )
-}
-
-export default (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method === "GET") {
-        get(req, res)
-    } else if (req.method === "POST") {
-        post(req, res)
-    } else {
-        res.status(404).json({error: "not found"})
-    }
-
 }
 
