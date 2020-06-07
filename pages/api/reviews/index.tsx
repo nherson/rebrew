@@ -11,7 +11,6 @@ const get = (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const post = (req: NextApiRequest, res: NextApiResponse) => {
-    console.log(req)
     const review = new Review({
         id: uuid(),
         ...req.body,
