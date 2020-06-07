@@ -1,113 +1,169 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { AromaCard } from '../../components/review/aroma'
+import Router from 'next/router'
+import Layout from '../../components/layout'
 import { Container, Box, Typography, ButtonGroup, Grid } from '@material-ui/core'
 import Button from '@material-ui/core/Button'
 import React from 'react'
 import _ from 'lodash'
 import ScoreCard from '../../components/scorecard'
+import fetch from '../../lib/fetch'
 
-const forwardHops = {
-  "aroma": "appearance",
-  "appearance": "flavor",
-  "flavor": "mouthfeel",
-  "mouthfeel": "DONE"
-}
+// constants outlining each stage of the form
+const AROMA = 'aroma'
+const APPEARANCE = 'appearance'
+const FLAVOR = 'flavor'
+const MOUTHFEEL = 'mouthfeel'
+const STYLE_ACCURACY = "styleAccuracy"
+const COMMENTS = "comments"
+const CONFIRMATION = "confirmation"
 
-const backwardHops = {
-  "aroma": "CANCEL",
-  "appearance": "aroma",
-  "flavor": "appearance",
-  "mouthfeel": "flavor",
-}
+//const stages = [AROMA, APPEARANCE, FLAVOR, MOUTHFEEL, STYLE_ACCURACY, COMMENTS, CONFIRMATION]
+const stages = [AROMA, APPEARANCE, FLAVOR, MOUTHFEEL, STYLE_ACCURACY, CONFIRMATION]
 
 interface CategoryScores {
   aroma: number | null;
   appearance: number | null;
   flavor: number | null;
   mouthfeel: number | null;
+  styleAccuracy: number | null;
 }
 
 interface ReviewState {
   scores: CategoryScores;
-  currentCategory: string;
+  comments: string;
+  currentStage: string;
 }
 
 interface ReviewProps {}
 
-class Review extends React.Component<ReviewProps,ReviewState> {
+class ReviewPage extends React.Component<ReviewProps,ReviewState> {
   state: ReviewState = {
     scores: {
       aroma: null,
       appearance: null,
       flavor: null,
       mouthfeel: null,
+      styleAccuracy: null,
     },
-    currentCategory: "aroma",
+    comments: "",
+    currentStage: AROMA,
   }
 
   constructor(props) {
     super(props)
     this.updateScore = this.updateScore.bind(this)
     this.goForward = this.goForward.bind(this)
+    this.goBackward = this.goBackward.bind(this)
     this.setState = this.setState.bind(this)
+    this.submit = this.submit.bind(this)
   }
 
   render() {
-    return (
-      <Container maxWidth="sm">
-        <Grid
-          container
-          spacing={0}
-          direction="column"
-          alignItems="center"
-          justify="space-between"
-          style={{ minHeight: '80vh' }}
-        >
+    // Generate a view for each stage of the review form
+    const scoreCards = new Map<string, JSX.Element>()
+    // aroma, appearance, flavor and mouthfeel all look similar
+    _.each(
+      [AROMA, APPEARANCE, FLAVOR, MOUTHFEEL],
+      (sense) => {
+        scoreCards.set(
+          sense, 
           <ScoreCard
             updateScoreCallback={this.updateScore}
-            category={this.state.currentCategory}
-            selectedScore={_.get(this.state.scores, this.state.currentCategory)}
+            category={sense}
+            selectedScore={_.get(this.state.scores, sense)}
           />
-          <Box flex={1} flexDirection="row" justifyContent="stretch">
-            { _.get(backwardHops, this.state.currentCategory) === "CANCEL" ? 
-              <Button 
-                color="primary"
-                href="/"
-              >
-                Cancel
-              </Button>
-            :
-              <Button
-                color="primary"
-                onClick={() => console.log("TODO GO BACK")}
-              >
-                Back
-              </Button>
-            }
-            { _.get(forwardHops, this.state.currentCategory) === "DONE" ?
-              <Button
-                color="primary"
-                href="/"
-                variant="contained"
-                disabled={_.get(this.state.scores, this.state.currentCategory) === null}
-                onClick={() => console.log("TODO API CALL AND REDIRECT")}
-              >
-                Submit
-              </Button>
-            :
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={this.goForward}
-                disabled={_.get(this.state.scores, this.state.currentCategory) === null}
-              >
-                Next
-              </Button> 
-            }
-          </Box>
-        </Grid>
-      </Container>
+        )
+      }
+    )
+    // style accuracy needs some careful wording
+    scoreCards.set(
+      STYLE_ACCURACY,
+      <ScoreCard
+        updateScoreCallback={this.updateScore}
+        category={STYLE_ACCURACY}
+        selectedScore={_.get(this.state.scores, STYLE_ACCURACY)}
+        title="Style Accuracy"
+        description="Is this beer brewed according to the style guidelines?"
+      />
+    )
+    // confirmation page
+    scoreCards.set(
+      CONFIRMATION,
+      <Typography>{JSON.stringify(this.state.scores)}</Typography>
+    )
+    return (
+      <Layout>
+        {scoreCards.get(this.state.currentStage)}
+        {this.formButtons()}
+      </Layout>
+    )
+  }
+
+  formButtons() {
+    return (
+      <Box flex={1} flexDirection="row" justifyContent="stretch">
+        { this.state.currentStage === AROMA ? 
+          <Button 
+            color="primary"
+          >
+            <Link href="/"><a>Cancel</a></Link>
+          </Button>
+        :
+          <Button
+            color="primary"
+            onClick={this.goBackward}
+          >
+            Back
+          </Button>
+        }
+        { this.state.currentStage === CONFIRMATION ?
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={this.submit}
+          >
+            Submit
+          </Button>
+        :
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={this.goForward}
+            disabled={_.isNil(_.get(this.state.scores, this.state.currentStage))}
+          >
+            Next
+          </Button> 
+        }
+      </Box>
+    )
+  }
+
+  // Submit's the review and redirects back to the home page
+  submit() {
+    console.log("ASDASDASD")
+    const review = {
+      aromaScore: this.state.scores.aroma,
+      appearanceScore: this.state.scores.appearance,
+      flavorScore: this.state.scores.flavor,
+      mouthfeelScore: this.state.scores.mouthfeel,
+      styleScore: this.state.scores.styleAccuracy,
+    }
+    console.log(JSON.stringify(review))
+    fetch(
+      '/api/reviews',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        method: "POST",
+        body: JSON.stringify(review),
+      }
+    ).then(
+      () => Router.push('/')
+    ).catch(
+      // TODO: handle errors
     )
   }
 
@@ -121,12 +177,20 @@ class Review extends React.Component<ReviewProps,ReviewState> {
   }
 
   goForward() {
-    const nextCategory = _.get(forwardHops, this.state.currentCategory)
+    const next = _.nth(stages, _.indexOf(stages, this.state.currentStage)+1)
     this.setState({
       ...this.state,
-      currentCategory: nextCategory,
+      currentStage: next,
+    })
+  }
+
+  goBackward() {
+    const last = _.nth(stages, _.indexOf(stages, this.state.currentStage)-1)
+    this.setState({
+      ...this.state,
+      currentStage: last,
     })
   }
 }
 
-export default Review
+export default ReviewPage

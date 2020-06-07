@@ -10,7 +10,11 @@ interface ScoreCardProps {
     updateScoreCallback: CallbackFunc;
     category: string;
     selectedScore: number | null;
+    title?: string;
+    description?: string;
 }
+
+const defaultDescription = 'Choose a score from 1 to 5 based on the style'
 
 class ScoreCard extends React.Component<ScoreCardProps> {
     render() {
@@ -18,10 +22,10 @@ class ScoreCard extends React.Component<ScoreCardProps> {
         <>
           <Box>
             <Typography variant="h4" align="center" component="h1" color="textPrimary">
-              {_.capitalize(this.props.category)}
+              {_.isNil(this.props.title) ? _.capitalize(this.props.category) : this.props.title}
             </Typography>
             <Typography color="textSecondary" variant="h6" align="center" component="h1">
-              Choose a score from 1 to 5 based on the style
+              {_.isNil(this.props.description) ? defaultDescription : this.props.description}
             </Typography>
           </Box>
           <Box>
