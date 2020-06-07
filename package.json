@@ -27,7 +27,8 @@
     "sequelize": "^5.21.12",
     "sequelize-typescript": "^1.1.0",
     "sqlite3": "^4.2.0",
-    "swr": "^0.2.2"
+    "swr": "^0.2.2",
+    "use-auth0-hooks": "^0.7.0"
   },
   "devDependencies": {
     "@types/node": "^14.0.11",
