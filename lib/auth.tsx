@@ -5,8 +5,8 @@ export default initAuth0({
   clientId: process.env.AUTH0_CLIENT_ID,
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
   scope: 'openid profile email',
-  redirectUri: 'https://cf1fcf657f3f.ngrok.io/api/auth/callback',
-  postLogoutRedirectUri: 'https://cf1fcf657f3f.ngrok.io/',
+  redirectUri: 'http://localhost:3000/api/auth/callback',
+  postLogoutRedirectUri: 'http://localhost:3000/',
   session: {
     cookieSecret: 'some-very-very-very-very-very-very-very-very-long-secret', //TODO
     cookieLifetime: 60 * 60 * 8
