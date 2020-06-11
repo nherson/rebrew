@@ -1,5 +1,19 @@
-
+import { Typography, Grid, Button } from "@material-ui/core";
 
 export default function Login(): JSX.Element {
-    return <h1><a href="/api/auth/login">You need to login in</a></h1>
+  return (
+    <Grid
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justify="center"
+      style={{ minHeight: "80vh" }}
+    >
+      <Typography variant="h5">Login to get to tasting! 🍻</Typography>
+      <Button variant="contained" color="primary">
+        <a href="/api/auth/login">Login</a>
+      </Button>
+    </Grid>
+  );
 }
