@@ -1,9 +1,8 @@
-import auth0 from '../../../lib/auth';
-import { NextApiRequest, NextApiResponse } from 'next';
+import auth0 from "../../../lib/auth";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function me(req: NextApiRequest, res: NextApiResponse) {
   try {
-    console.log("GETTING USER")
     await auth0.handleProfile(req, res);
   } catch (error) {
     console.error(error);

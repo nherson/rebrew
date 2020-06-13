@@ -3,15 +3,11 @@ import Link from "next/link";
 import Layout from "../components/layout";
 import { Typography } from "@material-ui/core";
 import React from "react";
-import { useFetchUser } from "../lib/user";
+import { useFetchUser, useRequiredLogin } from "../lib/user";
 import Router from "next/router";
 
 export default function Home() {
-  const { user, loading } = useFetchUser();
-
-  if (!user && !loading) {
-    Router.replace("/login");
-  }
+  const { user, loading } = useRequiredLogin();
 
   return (
     <>
