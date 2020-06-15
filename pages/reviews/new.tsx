@@ -107,8 +107,6 @@ function ReviewPage() {
     </Box>,
   ];
 
-  console.log("SUBS", submissions);
-
   return (
     <Grid
       container

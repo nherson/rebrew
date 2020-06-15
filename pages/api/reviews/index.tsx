@@ -21,7 +21,6 @@ export default withDB(
 );
 
 const get = (req: NextApiRequest, res: NextApiResponse) => {
-  console.error("ASDASDASDASD");
   Review.findAll().then((reviews) => res.status(200).json(reviews));
 };
 
