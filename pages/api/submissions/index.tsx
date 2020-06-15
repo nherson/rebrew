@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Review from "../../../lib/models/review";
+import Submission from "../../../lib/models/submission";
 import uuid from "../../../lib/uuid";
 import { ValidationError } from "sequelize";
 import { formatValidationError } from "../../../lib/errors";
@@ -18,17 +18,17 @@ export default auth0.requireAuthentication(
 );
 
 const get = (req: NextApiRequest, res: NextApiResponse) => {
-  Review.findAll().then((reviews) => res.status(200).json(reviews));
+  Submission.findAll().then((submissions) => res.status(200).json(submissions));
 };
 
 const post = (req: NextApiRequest, res: NextApiResponse) => {
-  const review = new Review({
+  const submission = new Submission({
     id: uuid(),
     ...req.body,
   });
-  review
+  submission
     .save()
-    .then((review) => res.status(200).json(review))
+    .then((submission) => res.status(200).json(submission))
     .catch((err) => {
       if (err instanceof ValidationError) {
         res.status(400).json({ errors: formatValidationError(err) });

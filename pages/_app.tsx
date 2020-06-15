@@ -3,6 +3,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { theme } from "../styles/theme";
 import React from "react";
+import Link from "next/link";
 import Head from "next/head";
 import { UserProvider, useFetchUser } from "../lib/user";
 import Layout from "../components/layout";
@@ -64,8 +65,12 @@ export default function App({ Component, pageProps }) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem>Profile</MenuItem>
-                <MenuItem>My account</MenuItem>
+                <Link href="/reviews/new">
+                  <MenuItem onClick={handleClose}>Review a beer</MenuItem>
+                </Link>
+                <Link href="/submissions/new">
+                  <MenuItem onClick={handleClose}>Submit a beer</MenuItem>
+                </Link>
                 <MenuItem>
                   <a href="/api/auth/logout">Logout</a>
                 </MenuItem>
