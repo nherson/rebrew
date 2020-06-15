@@ -25,7 +25,7 @@ export default function ScoreCard({
 }: ScoreCardProps) {
   return (
     <>
-      <Box>
+      <Box my="auto">
         <Typography
           variant="h4"
           align="center"
@@ -43,7 +43,7 @@ export default function ScoreCard({
           {_.isNil(description) ? defaultDescription : description}
         </Typography>
       </Box>
-      <Box>
+      <Box my="100px">
         <ButtonGroup
           size="large"
           color="primary"

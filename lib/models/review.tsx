@@ -9,9 +9,9 @@ import {
   NotNull,
   AllowNull,
   BelongsTo,
+  ForeignKey,
 } from "sequelize-typescript";
 
-import db from "../db";
 import Submission from "./submission";
 
 @Table
@@ -54,11 +54,12 @@ class Review extends Model<Review> {
   @Column(DataType.TEXT)
   comments: string;
 
-  //   @BelongsTo(() => Submission)
-  //   submission: Submission;
-}
+  @ForeignKey(() => Submission)
+  @Column(DataType.STRING)
+  submissionId: string;
 
-db.addModels([Review]);
-db.sync();
+  @BelongsTo(() => Submission)
+  submission: Submission;
+}
 
 export default Review;

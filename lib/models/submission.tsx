@@ -33,11 +33,8 @@ class Submission extends Model<Submission> {
   @Column(DataType.STRING)
   email: string;
 
-  //   @HasMany(() => Review)
-  //   reviews: Review[];
+  @HasMany(() => Review)
+  reviews: Review[];
 }
-
-db.addModels([Submission]);
-db.sync();
 
 export default Submission;
