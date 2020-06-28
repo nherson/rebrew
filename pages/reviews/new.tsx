@@ -17,6 +17,7 @@ import fetch from "../../lib/fetch";
 import { useRequiredLogin } from "../../lib/user";
 import { useSubmissions } from "../../lib/api";
 import SubmissionSelect from "../../components/submissionselect";
+import useCardSlider, { CardSlider } from "../../components/cardslider";
 
 const SELECT_STAGE = 0;
 const AROMA_STAGE = 1;
@@ -29,15 +30,20 @@ const CONFIRMATION_STAGE = 6;
 function ReviewPage() {
   useRequiredLogin();
 
-  const [stage, setStage] = useState(0);
+  //const [stage, setStage] = useState(0);
 
   const { submissions, loading, error } = useSubmissions();
   const [submissionId, setSubmissionId] = useState(null);
 
+  const { cardSliderProps, goForward, goBackward } = useCardSlider();
+
   const handleSubmissionSelection = (id: string) => {
     setSubmissionId(id);
-    setStage(stage + 1);
+    //setStage(stage + 1);
+    goForward();
   };
+
+  const stage = cardSliderProps.current;
 
   const [aroma, setAroma] = useState(null);
   const [appearance, setAppearance] = useState(null);
@@ -115,7 +121,11 @@ function ReviewPage() {
       alignItems="center"
       justify="space-between"
     >
-      {stageViews[stage]}
+      {/*stageViews[stage]*/}
+      <Box minHeight="80vh">
+        <CardSlider {...cardSliderProps}>{stageViews}</CardSlider>
+      </Box>
+
       {stage !== SELECT_STAGE && (
         <Box>
           {stage === SELECT_STAGE ? (
@@ -125,12 +135,7 @@ function ReviewPage() {
               </Link>
             </Button>
           ) : (
-            <Button
-              color="primary"
-              onClick={() => {
-                setStage(stage - 1);
-              }}
-            >
+            <Button color="primary" onClick={goBackward}>
               Back
             </Button>
           )}
@@ -142,9 +147,7 @@ function ReviewPage() {
             <Button
               color="primary"
               variant="contained"
-              onClick={() => {
-                setStage(stage + 1);
-              }}
+              onClick={goForward}
               disabled={_.isNil(_.get(scores, stage - 1))}
             >
               Next

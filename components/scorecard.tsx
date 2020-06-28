@@ -43,7 +43,7 @@ export default function ScoreCard({
           {_.isNil(description) ? defaultDescription : description}
         </Typography>
       </Box>
-      <Box my="100px">
+      <Box my="100px" display="flex" mx="100px" alignItems="center">
         <ButtonGroup
           size="large"
           color="primary"
