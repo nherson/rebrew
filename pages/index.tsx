@@ -11,16 +11,14 @@ export default function Home() {
 
   return (
     <>
-      <Layout>
-        <Typography
-          variant="h4"
-          align="center"
-          component="h1"
-          color="textPrimary"
-        >
-          Create a <a href="/reviews/new">review!</a>
-        </Typography>
-      </Layout>
+      <Typography
+        variant="h4"
+        align="center"
+        component="h1"
+        color="textPrimary"
+      >
+        Create a <a href="/reviews/new">review!</a>
+      </Typography>
       {user && !loading ? <p>hey its {user.email}</p> : <p> you're nobody!</p>}
     </>
   );
