@@ -3,14 +3,9 @@ import { NextApiResponse, NextApiRequest } from "next";
 import Submission from "./models/submission";
 import Review from "./models/review";
 
-let sequelize: Sequelize;
-if (process.env.ENVIRONMENT === "production") {
-  sequelize = new Sequelize(process.env.DATABASE_URL);
-} else {
-  sequelize = new Sequelize("sqlite://development.db?cache=shared", {
-    models: [Review, Submission],
-  });
-}
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  models: [Review, Submission],
+});
 
 sequelize.sync().then(() => console.log(sequelize.models));
 
