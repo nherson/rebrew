@@ -60,6 +60,78 @@ class Review extends Model<Review> {
 
   @BelongsTo(() => Submission)
   submission: Submission;
+
+  /*
+   * DESCRIPTOR BOOLEANS
+   */
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  acetaldehyde: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  alcoholic: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  astringent: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  diacetyl: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  dimethylSulfide: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  estery: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  grassy: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  lightStruck: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  metallic: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  musty: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  oxidized: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  phenolic: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  solvent: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  sourAcidic: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  sulfur: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  vegetal: boolean;
+
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  yeasty: boolean;
 }
 
 export default Review;

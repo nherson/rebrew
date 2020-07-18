@@ -7,7 +7,7 @@
           { "ssr": true, "displayName": true, "preprocess": false }
         ]
       ],
-      "presets": ["next/babel"]
+      "presets": ["@babel/preset-typescript", "next/babel"]
     },
     "production": {
       "plugins": [
@@ -16,10 +16,10 @@
           { "ssr": true, "displayName": true, "preprocess": false }
         ]
       ],
-      "presets": ["next/babel"]
+      "presets": ["@babel/preset-typescript", "next/babel"]
     }
   },
-  "presets": ["next/babel"],
+  "presets": ["@babel/preset-typescript", "next/babel"],
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     [

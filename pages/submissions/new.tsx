@@ -19,25 +19,24 @@ import {
 import Button from "@material-ui/core/Button";
 import React, { useState } from "react";
 import _ from "lodash";
-import ScoreCard from "../../components/scorecard";
 import fetch from "../../lib/fetch";
 import { useRequiredLogin } from "../../lib/user";
 import Submission from "../../lib/models/submission";
 import { styles } from "../../lib/bjcp";
 
 function NewSubmission() {
-  const { user, loading } = useRequiredLogin();
+  useRequiredLogin();
 
   const [name, setName] = useState("");
   const [style, setStyle] = useState("");
   const [notes, setNotes] = useState("");
 
+  // TODO: move meat of this to api module
   const submit = function () {
     const submission = {
       name: name,
       style: style,
       notes: notes,
-      email: user.email,
     };
     fetch("/api/submissions", {
       headers: {
@@ -91,9 +90,9 @@ function NewSubmission() {
             fullWidth
             required
           >
-            {_.map(_.keys(styles), (style) => {
+            {_.map(_.keys(styles), (style, i) => {
               return (
-                <MenuItem value={style}>
+                <MenuItem value={style} key={"style-" + i}>
                   {style} - {styles[style]}
                 </MenuItem>
               );

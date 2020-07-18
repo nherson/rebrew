@@ -10,9 +10,9 @@ export default withDB(
   auth0.requireAuthentication(
     async (req: NextApiRequest, res: NextApiResponse) => {
       if (req.method === "GET") {
-        get(req, res);
+        await get(req, res);
       } else if (req.method === "POST") {
-        post(req, res);
+        await post(req, res);
       } else {
         res.status(404).json({ error: "not found" });
       }
@@ -20,13 +20,15 @@ export default withDB(
   )
 );
 
-const get = (req: NextApiRequest, res: NextApiResponse) => {
+const get = async (req: NextApiRequest, res: NextApiResponse) => {
   Review.findAll().then((reviews) => res.status(200).json(reviews));
 };
 
-const post = (req: NextApiRequest, res: NextApiResponse) => {
+const post = async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await auth0.getSession(req);
   const review = new Review({
     id: uuid(),
+    email: session.user.email,
     ...req.body,
   });
   review

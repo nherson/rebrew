@@ -7,7 +7,6 @@ let sequelize: Sequelize;
 if (process.env.ENVIRONMENT === "production") {
   sequelize = new Sequelize(process.env.DATABASE_URL);
 } else {
-  console.log("using in memory database for storage");
   sequelize = new Sequelize("sqlite://development.db?cache=shared", {
     models: [Review, Submission],
   });

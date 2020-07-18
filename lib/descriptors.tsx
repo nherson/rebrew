@@ -1,98 +1,90 @@
 import { useState } from "react";
 import _ from "lodash";
 
-const choices = [
-  {
+export const descriptors = {
+  acetaldehyde: {
     displayName: "Acetaldehyde",
     emoji: "🍏",
   },
-  {
+  alcoholic: {
     displayName: "Alcoholic",
     emoji: "🥃",
   },
-  {
+  astringent: {
     displayName: "Astringent",
     emoji: "🍵",
   },
-  {
+  diacetyl: {
     displayName: "Diacetyl",
     emoji: "🧈",
   },
-  {
+  dimethylSulfide: {
     displayName: "Dimethyl Sulfide",
     emoji: "🌽",
   },
-  {
+  estery: {
     displayName: "Estery",
     emoji: "🍌",
   },
-  {
+  grassy: {
     displayName: "Grassy",
     emoji: "🌱",
   },
-  {
+  lightStruck: {
     displayName: "Light-Struck",
     emoji: "🌞",
   },
-  {
+  metallic: {
     displayName: "Metallic",
     emoji: "🔧",
   },
-  {
+  musty: {
     displayName: "Musty",
     emoji: "🍄",
   },
-  {
+  oxidized: {
     displayName: "Oxidized",
     emoji: "📦",
   },
-  {
+  phenolic: {
     displayName: "Phenolic",
     emoji: "💊",
   },
-  {
+  solvent: {
     displayName: "Solvent",
     emoji: "🧪",
   },
-  {
+  sourAcidic: {
     displayName: "Sour/Acidic",
     emoji: "🍋",
   },
-  {
+  sulfur: {
     displayName: "Sulfur",
     emoji: "🥚",
   },
-  {
+  vegetal: {
     displayName: "Vegetal",
     emoji: "🥦",
   },
-  {
+  yeasty: {
     displayName: "Yeasty",
     emoji: "🍞",
   },
-];
+};
 
-interface Descriptor {
-  key: string;
-  displayName: string;
-  emoji: string;
-  sensed: boolean;
-  toggle: (b: boolean) => void;
-}
-
-export default function useSensoryPanel(): Descriptor[] {
-  return _.map(choices, (sensoryChoice) => {
-    const [sensed, setSensed] = useState(false);
+export default function useDescriptors() {
+  return _.mapValues(descriptors, (d) => {
+    const [detected, setDetected] = useState(false);
     return {
-      key: _.camelCase(sensoryChoice.displayName),
-      displayName: sensoryChoice.displayName,
-      emoji: sensoryChoice.emoji,
-      sensed: sensed,
-      toggle: setSensed,
+      key: _.camelCase(d.displayName),
+      displayName: d.displayName,
+      emoji: d.emoji,
+      detected: detected,
+      setDetected: setDetected,
     };
   });
 }
 
-export const filterDetected = (descriptors: Descriptor[]): Descriptor[] => {
-  return _.filter(descriptors, (d) => d.sensed);
+export const filterDetected = (descriptors) => {
+  return _.pickBy(descriptors, (d) => d.detected);
 };

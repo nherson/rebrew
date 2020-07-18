@@ -1,14 +1,10 @@
 import Head from "next/head";
 import Link from "next/link";
 import Router from "next/router";
-import Layout from "../../components/layout";
 import {
-  Container,
   Box,
   Typography,
-  ButtonGroup,
   Grid,
-  Paper,
   FormControl,
   FormLabel,
   RadioGroup,
@@ -26,13 +22,14 @@ import {
 import Button from "@material-ui/core/Button";
 import React, { useState } from "react";
 import _ from "lodash";
-import ScoreCard from "../../components/scorecard";
 import fetch from "../../lib/fetch";
 import { useRequiredLogin } from "../../lib/user";
 import { useSubmissions } from "../../lib/api";
-import SubmissionSelect from "../../components/submissionselect";
-import useSensoryPanel, { filterDetected } from "../../lib/sensorypanel";
+import useDescriptors from "../../lib/descriptors";
 import { anyNil } from "../../lib/helpers";
+import { styles } from "../../lib/bjcp";
+import Review from "../../components/review";
+import SubmissionCard from "../../components/submissioncard";
 
 const aromaName = "aroma";
 const appearanceName = "appearance";
@@ -76,7 +73,9 @@ function ReviewPage() {
   };
 
   // State for choosing a submission to review
-  const { submissions, loading, error } = useSubmissions();
+  const { submissions, loading, error } = useSubmissions({
+    userOnly: false,
+  });
   const [submission, setSubmission] = useState(null);
   const handleSelectSubmission = (s) => {
     setSubmission(s);
@@ -90,22 +89,27 @@ function ReviewPage() {
   const [mouthfeel, setMouthfeel] = useState(null);
   const [styleAccuracy, setStyleAccuracy] = useState(null);
 
-  // State for discrete sensory detections
-  const sensoryOptions = useSensoryPanel();
+  // State for distinct sensory descriptors detected
+  const descriptors = useDescriptors();
 
   // State for reviewer comments
   const [comments, setComments] = useState("");
   const handleCommentsChange = (event) => setComments(event.target.value);
 
-  const submit = function () {
-    const review = {
+  const review = _.merge(
+    {
       aromaScore: aroma,
       appearanceScore: appearance,
       flavorScore: flavor,
       mouthfeelScore: mouthfeel,
       styleScore: styleAccuracy,
-      submissionId: submission.Id,
-    };
+      submissionId: _.isNil(submission) ? "" : submission.id,
+      comments: comments,
+    },
+    _.mapValues(descriptors, (d) => d.detected)
+  );
+
+  const submit = function () {
     fetch("/api/reviews", {
       headers: {
         "Content-Type": "application/json",
@@ -124,28 +128,11 @@ function ReviewPage() {
       {_.map(submissions, (s) => (
         <Grid item xs={12} key={s.id}>
           <Box display="flex" margin="10px">
-            <Card
-              style={{ width: "100%" }}
-              onClick={() => handleSelectSubmission(s)}
-            >
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  {s.name}
-                </Typography>
-                <Typography color="textSecondary" gutterBottom>
-                  {s.style}
-                </Typography>
-                <Typography color="textSecondary">Notes</Typography>
-                <Typography variant="body2" component="p">
-                  {s.notes === "" ? "N/A" : s.notes}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" variant="contained" color="primary">
-                  Review
-                </Button>
-              </CardActions>
-            </Card>
+            <SubmissionCard
+              submission={s}
+              selectText="Review"
+              callback={handleSelectSubmission}
+            />
           </Box>
         </Grid>
       ))}
@@ -216,27 +203,27 @@ function ReviewPage() {
     </Grid>
   );
 
-  const SensoryPanel = (): JSX.Element => (
+  const DescriptorPanel = (): JSX.Element => (
     <Grid container>
       <Grid item xs={12}>
         <Typography align="center" variant="h6">
-          Sensory Panel
+          Sensory Descriptors
         </Typography>
       </Grid>
-      {_.map(sensoryOptions, (option) => (
-        <Grid item xs={6} key={"sensory-option-" + option.key}>
+      {_.map(descriptors, (d) => (
+        <Grid item xs={6} key={"descriptor-option-" + d.key}>
           <Box
             margin="5px"
             paddingTop="15%"
             paddingBottom="15%"
             borderRadius={8}
-            borderColor={option.sensed ? "success.dark" : "primary.light"}
-            bgcolor={option.sensed ? "action.selected" : "background.default"}
-            border={option.sensed ? 4 : 2}
-            onClick={() => option.toggle(!option.sensed)}
+            borderColor={d.detected ? "success.dark" : "primary.light"}
+            bgcolor={d.detected ? "action.selected" : "background.default"}
+            border={d.detected ? 4 : 2}
+            onClick={() => d.setDetected(!d.detected)}
           >
-            <Typography align="center">{option.displayName}</Typography>
-            <Typography align="center">{option.emoji}</Typography>
+            <Typography align="center">{d.displayName}</Typography>
+            <Typography align="center">{d.emoji}</Typography>
           </Box>
         </Grid>
       ))}
@@ -279,7 +266,7 @@ function ReviewPage() {
           <Typography variant="subtitle2">
             Style:{" "}
             <Typography display="inline" variant="body2">
-              {submission.style}
+              {submission.style} - {styles[submission.style]}
             </Typography>
           </Typography>
         </Box>
@@ -290,92 +277,7 @@ function ReviewPage() {
         </Box>
       </Grid>
       <Grid item xs={12}>
-        <Typography variant="subtitle1">Scores</Typography>
-      </Grid>
-      <Grid item xs={6}>
-        <Box marginLeft="20%">
-          <Typography variant="subtitle2">
-            Aroma:{" "}
-            <Typography display="inline" variant="body2">
-              {aroma}
-            </Typography>
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid item xs={6}>
-        <Box>
-          <Typography variant="subtitle2">
-            Appearance:{" "}
-            <Typography display="inline" variant="body2">
-              {appearance}
-            </Typography>
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid item xs={6}>
-        <Box marginLeft="20%">
-          <Typography variant="subtitle2">
-            Flavor:{" "}
-            <Typography display="inline" variant="body2">
-              {flavor}
-            </Typography>
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid item xs={6}>
-        <Box>
-          <Typography variant="subtitle2">
-            Mouthfeel:{" "}
-            <Typography display="inline" variant="body2">
-              {mouthfeel}
-            </Typography>
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid item xs={6}>
-        <Box marginLeft="20%">
-          <Typography variant="subtitle2">
-            Style Accuracy:{" "}
-            <Typography display="inline" variant="body2">
-              {styleAccuracy}
-            </Typography>
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid item xs={12} style={{ paddingTop: "10px" }}>
-        <Typography variant="subtitle1">Descriptors</Typography>
-      </Grid>
-      {_.map(filterDetected(sensoryOptions), (descriptor) => (
-        <Grid item xs={6}>
-          <Box
-            marginX="auto"
-            marginY="2px"
-            display="flex"
-            justifyContent="center"
-          >
-            <Chip
-              label={descriptor.displayName + " " + descriptor.emoji}
-              variant="outlined"
-            ></Chip>
-          </Box>
-        </Grid>
-      ))}
-      <Grid item xs={12} style={{ paddingTop: "10px" }}>
-        <Typography variant="subtitle1">Comments</Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <Box marginX="10%">
-          {_.map(
-            _.split(comments === "" ? "N/A" : comments, "\n"),
-            (line, i) => (
-              <Box key={"comment-line-" + i}>
-                <Typography variant="caption" color="textSecondary">
-                  {line}
-                </Typography>
-              </Box>
-            )
-          )}
-        </Box>
+        <Review review={review} />
       </Grid>
       <Grid item xs={6} style={{ paddingTop: "20px" }}>
         <Box justifyContent="center" display="flex" margin="10px">
@@ -387,7 +289,7 @@ function ReviewPage() {
       <Grid item xs={6} style={{ paddingTop: "20px" }}>
         <Box justifyContent="center" display="flex" margin="10px">
           <Button color="primary" variant="contained" onClick={submit}>
-            Next
+            Submit
           </Button>
         </Box>
       </Grid>
@@ -397,7 +299,7 @@ function ReviewPage() {
   const stages = [
     <SubmissionSelect />,
     <ScoreCard />,
-    <SensoryPanel />,
+    <DescriptorPanel />,
     <Comments
       onChange={handleCommentsChange}
       forward={handleForward}
@@ -406,9 +308,6 @@ function ReviewPage() {
     />,
     <Confirmation />,
   ];
-
-  // TODO: used to test individual panels, remove when done developing
-  //   return <Confirmation />;
 
   return _.map(stages, (child, i) => (
     <Slide

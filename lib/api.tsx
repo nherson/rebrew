@@ -3,8 +3,12 @@ import Review from "./models/review";
 import axios from "axios";
 import Submission from "./models/submission";
 import { NextApiResponse, NextApiRequest } from "next";
+import _ from "lodash";
 
-export function useReviews() {
+interface UseReviewsConfig {
+  submissionId: string;
+}
+export function useReviews(cfg: UseReviewsConfig) {
   const [loading, setLoading] = useState(true);
   const [reviews, setReviews]: [
     Array<Review>,
@@ -15,20 +19,28 @@ export function useReviews() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resp = await axios("/api/reviews");
+        const resp = await axios(
+          "/api/submissions/" + cfg.submissionId + "/reviews"
+        );
         setReviews(resp.data);
       } catch (e) {
         setError(e);
       }
       setLoading(false);
     };
-    fetchData();
-  }, []);
+    if (!_.isNil(cfg.submissionId)) {
+      fetchData();
+    }
+  }, [cfg.submissionId]);
 
   return { reviews, loading, error };
 }
 
-export function useSubmissions() {
+interface UseSubmissionsConfig {
+  userOnly: boolean;
+}
+export function useSubmissions(cfg: UseSubmissionsConfig) {
+  const suffix = cfg.userOnly ? "" : "?all=1";
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions]: [
     Array<Submission>,
@@ -39,7 +51,7 @@ export function useSubmissions() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resp = await axios("/api/submissions");
+        const resp = await axios("/api/submissions" + suffix);
         setSubmissions(resp.data);
       } catch (e) {
         setError(e);
@@ -50,4 +62,30 @@ export function useSubmissions() {
   }, []);
 
   return { submissions, loading, error };
+}
+
+export function useSubmission(id: string) {
+  const [loading, setLoading] = useState(true);
+  const [submission, setSubmission]: [
+    Submission,
+    Dispatch<Submission>
+  ] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resp = await axios("/api/submissions/" + id);
+        setSubmission(resp.data);
+      } catch (e) {
+        setError(e);
+      }
+      setLoading(false);
+    };
+    if (!_.isNil(id)) {
+      fetchData();
+    }
+  }, [id]);
+
+  return { submission, loading, error };
 }

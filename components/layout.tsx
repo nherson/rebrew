@@ -43,17 +43,13 @@ export default function Layout({ children }) {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <Link href="/reviews/new">
-              <MenuItem onClick={handleClose}>Review a beer</MenuItem>
-            </Link>
-            <Link href="/submissions/new">
-              <MenuItem onClick={handleClose}>Submit a beer</MenuItem>
-            </Link>
             <MenuItem>
               <a href="/api/auth/logout">Logout</a>
             </MenuItem>
           </Menu>
-          <Typography variant="h6">Rebrew</Typography>
+          <Link href="/" color="inherit" underline="none">
+            <Typography variant="h6">Rebrew</Typography>
+          </Link>
         </Toolbar>
       </AppBar>
       <Container maxWidth="xs" style={{ minHeight: "80vh" }}>
