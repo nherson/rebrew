@@ -3,8 +3,7 @@
 # dependencies
 /node_modules
 /.pnp
-.pnp.js
-
+.pnp.js 
 # testing
 /coverage
 
@@ -28,6 +27,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env
 
 # dev db
 development.db
