@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p $PORT",
+    "start": "node server.js",
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
@@ -21,6 +21,8 @@
     "axios": "^0.19.2",
     "babel-plugin-styled-components": "^1.10.7",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "heroku-ssl-redirect": "0.0.4",
     "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.15",
     "next": "^9.4.4",
