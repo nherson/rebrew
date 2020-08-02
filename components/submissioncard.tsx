@@ -43,11 +43,9 @@ const SubmissionCard = ({
   }
 
   return (
-    <Card style={{ width: "100%" }}>
+    <Card style={{ width: "100%" }} raised>
       <CardContent>
-        <Typography variant="h5" component="h2">
-          {submission.name}
-        </Typography>
+        <Typography variant="h6">{submission.name}</Typography>
         <Typography color="textSecondary" gutterBottom>
           {submission.style} - {styles[submission.style]}
         </Typography>

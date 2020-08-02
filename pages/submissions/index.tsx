@@ -2,20 +2,28 @@ import { Grid, Typography, Box } from "@material-ui/core";
 import { useSubmissions } from "../../lib/api";
 import _ from "lodash";
 import SubmissionCard from "../../components/submissioncard";
+import { FullScreenErrorUnexpected } from "../../components/fullScreenErrorUnexpected";
+import { FullScreenLoading } from "../../components/fullScreenLoading";
+import { FullScreenError } from "../../components/fullScreenError";
 
 const Submissions = () => {
   const { submissions, loading, error } = useSubmissions({
     userOnly: true,
   });
-  //   if (loading) {
-  //     return (
-  //       <Grid item xs={12}>
-  //         <Typography align="center" variant="h6">
-  //           Loading
-  //         </Typography>
-  //       </Grid>
-  //     );
-  //   }
+
+  if (error) {
+    return <FullScreenErrorUnexpected />;
+  } else if (loading) {
+    return <FullScreenLoading />;
+  } else if (!_.isNil(submissions) && submissions.length === 0) {
+    return (
+      <FullScreenError
+        text="You currently have no submitted beers available for review 🤔"
+        backButton
+      />
+    );
+  }
+
   return (
     <Grid container>
       <Grid item xs={12}>

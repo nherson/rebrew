@@ -16,9 +16,7 @@ export interface IApiRoute {
 // Middleware to load model definitions for called API functions
 export function withDB(inner: IApiRoute): IApiRoute {
   return (req, res): Promise<void> => {
-    return sequelize.sync().then(() => {
-      inner(req, res);
-    });
+    return inner(req, res);
   };
 }
 

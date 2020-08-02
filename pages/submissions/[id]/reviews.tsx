@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import { useReviews, useSubmission } from "../../../lib/api";
 import Review from "../../../components/review";
 import { styles } from "../../../lib/bjcp";
+import { FullScreenLoading } from "../../../components/fullScreenLoading";
+import { FullScreenError } from "../../../components/fullScreenError";
+import { FullScreenErrorUnexpected } from "../../../components/fullScreenErrorUnexpected";
 
 const Reviews = () => {
   const router = useRouter();
@@ -11,10 +14,20 @@ const Reviews = () => {
 
   const { submission, loading, error } = useSubmission(id as string);
 
-  if (loading) {
-    return <Typography>Loading</Typography>;
-  } else if (error) {
-    return <Typography>Error!</Typography>;
+  if (error) {
+    return <FullScreenErrorUnexpected />;
+  } else if (loading) {
+    return <FullScreenLoading />;
+  } else if (
+    _.isNil(_.get(submission, "reviews", null)) ||
+    submission.reviews.length === 0
+  ) {
+    return (
+      <FullScreenError
+        text={`${submission.name} has not received any reviews yet 🥺`}
+        backButton
+      />
+    );
   }
 
   return (

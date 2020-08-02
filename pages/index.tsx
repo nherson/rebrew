@@ -1,13 +1,15 @@
-import Head from "next/head";
 import Link from "next/link";
-import Layout from "../components/layout";
 import { Typography, Grid, Box, Button } from "@material-ui/core";
 import React from "react";
-import { useFetchUser, useRequiredLogin } from "../lib/user";
-import Router from "next/router";
+import { useRequiredLogin } from "../lib/user";
+import { FullScreenLoading } from "../components/fullScreenLoading";
 
 export default function Home() {
-  const { user, loading } = useRequiredLogin();
+  const { loading } = useRequiredLogin();
+
+  if (loading) {
+    <FullScreenLoading />;
+  }
 
   return (
     <Grid container>

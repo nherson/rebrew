@@ -21,7 +21,7 @@ import {
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import React, { useState } from "react";
-import _ from "lodash";
+import _, { escapeRegExp } from "lodash";
 import fetch from "../../lib/fetch";
 import { useRequiredLogin } from "../../lib/user";
 import { useSubmissions } from "../../lib/api";
@@ -30,6 +30,9 @@ import { anyNil } from "../../lib/helpers";
 import { styles } from "../../lib/bjcp";
 import Review from "../../components/review";
 import SubmissionCard from "../../components/submissioncard";
+import { FullScreenLoading } from "../../components/fullScreenLoading";
+import { FullScreenError } from "../../components/fullScreenError";
+import { FullScreenErrorUnexpected } from "../../components/fullScreenErrorUnexpected";
 
 const aromaName = "aroma";
 const appearanceName = "appearance";
@@ -123,21 +126,23 @@ function ReviewPage() {
     // TODO: handle errors
   };
 
-  const SubmissionSelect = () => (
-    <Grid container>
-      {_.map(submissions, (s) => (
-        <Grid item xs={12} key={s.id}>
-          <Box display="flex" margin="10px">
-            <SubmissionCard
-              submission={s}
-              selectText="Review"
-              callback={handleSelectSubmission}
-            />
-          </Box>
-        </Grid>
-      ))}
-    </Grid>
-  );
+  const SubmissionSelect = () => {
+    return (
+      <Grid container>
+        {_.map(submissions, (s) => (
+          <Grid item xs={12} key={s.id}>
+            <Box display="flex" margin="10px">
+              <SubmissionCard
+                submission={s}
+                selectText="Review"
+                callback={handleSelectSubmission}
+              />
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
+    );
+  };
 
   const ScoreCard = (): JSX.Element => (
     <Grid container>
@@ -308,6 +313,19 @@ function ReviewPage() {
     />,
     <Confirmation />,
   ];
+
+  if (loading) {
+    return <FullScreenLoading />;
+  } else if (error) {
+    return <FullScreenErrorUnexpected />;
+  } else if (_.isNil(submissions) || submissions.length === 0) {
+    return (
+      <FullScreenError
+        text="There are no submissions available, check back later 🤷"
+        backButton
+      />
+    );
+  }
 
   return _.map(stages, (child, i) => (
     <Slide

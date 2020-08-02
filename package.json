@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "node server.js",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "migrate": "node_modules/.bin/sequelize db:migrate"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^0.13.0",
@@ -24,7 +25,7 @@
     "express": "^4.17.1",
     "heroku-ssl-redirect": "0.0.4",
     "isomorphic-unfetch": "^3.0.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "next": "^9.4.4",
     "pg": "^8.2.1",
     "react": "16.13.1",
