@@ -71,16 +71,15 @@ const Review = ({ review }) => (
         <Grid item xs={6}>
           <Box
             key={"descriptor-detected-" + i}
-            marginX="auto"
-            marginY="2px"
+            padding={0.5}
             display="flex"
             justifyContent="center"
           >
             <Chip
+              className="descriptor-chip"
               label={
                 descriptors[key].displayName + " " + descriptors[key].emoji
               }
-              variant="outlined"
             ></Chip>
           </Box>
         </Grid>

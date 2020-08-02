@@ -18,6 +18,7 @@ import {
   FormHelperText,
   Divider,
   Chip,
+  Avatar,
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import React, { useState } from "react";
@@ -217,7 +218,7 @@ function ReviewPage() {
       </Grid>
       {_.map(descriptors, (d) => (
         <Grid item xs={6} key={"descriptor-option-" + d.key}>
-          <Box
+          {/* <Box
             margin="5px"
             paddingTop="15%"
             paddingBottom="15%"
@@ -229,6 +230,14 @@ function ReviewPage() {
           >
             <Typography align="center">{d.displayName}</Typography>
             <Typography align="center">{d.emoji}</Typography>
+          </Box> */}
+          <Box display="flex" justifyContent="center" padding={1}>
+            <Chip
+              className="descriptor-chip"
+              variant={d.detected ? "default" : "outlined"}
+              label={`${d.displayName} ${d.emoji}`}
+              onClick={() => d.setDetected(!d.detected)}
+            />
           </Box>
         </Grid>
       ))}

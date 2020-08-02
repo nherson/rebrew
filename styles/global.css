@@ -135,3 +135,7 @@ body {
 * {
   box-sizing: border-box;
 }
+
+.descriptor-chip {
+  width: 100%;
+}
