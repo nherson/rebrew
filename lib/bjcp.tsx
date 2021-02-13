@@ -1,4 +1,5 @@
 export const styles = {
+  // BEER
   "1A": "American Light Lager",
   "1B": "American Lager",
   "1C": "Cream Ale",
@@ -111,4 +112,32 @@ export const styles = {
   "34A": "Clone Beer",
   "34B": "Mixed-Style Beer",
   "34C": "Experimental Beer",
+
+  // MEAD
+  "M1A": "Dry Mead",
+  "M1B": "Semi-Sweet Mead",
+  "M1C": "Sweet Mead",
+  "M2A": "Cyser",
+  "M2B": "Pyment",
+  "M2C": "Berry Mead",
+  "M2D": "Stone Fruit Mead",
+  "M2E": "Melomel",
+  "M3A": "Fruit and Spice Mead",
+  "M3B": "Spice, Herb or Vegetable Mead",
+  "M4A": "Braggot",
+  "M4B": "Historical Mead",
+  "M4C": "Experimental Mead",
+
+  // CIDER
+  "C1A": "New World Cider",
+  "C1B": "English Cider",
+  "C1C": "French Cider",
+  "C1D": "New World Perry",
+  "C1E": "Traditional Perry",
+  "C2A": "New England Cider",
+  "C2B": "Cider with Other Fruit",
+  "C2C": "Applewine",
+  "C2D": "Ice Cider",
+  "C2E": "Cider with Herbs/Spices",
+  "C2F": "Specialty Cider/Perry",
 };
