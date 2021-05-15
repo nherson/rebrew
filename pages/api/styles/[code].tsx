@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
 import { guidelines } from "../../../lib/bjcp";
-import { ciders, meads } from "../../../lib/mead";
 
 const errInvalidStyleCode = { error: "invalid bjcp style code" };
 const styleCodeRegExp = new RegExp("^[MmCc]?[0-9]+[A-Za-z]$");
