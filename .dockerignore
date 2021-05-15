@@ -1,0 +1,5 @@
+.next
+migrations
+.env
+public
+node_modules

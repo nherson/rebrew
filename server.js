@@ -12,12 +12,20 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
+var proc = require('process')
+proc.on('SIGINT', () => {
+  console.info("Interrupted")
+  proc.exit(0)
+})
+
 app.prepare().then(() => {
   const server = express();
 
   // redirect to SSL
-  server.use(sslRedirect());
-
+  if (process.env.NODE_ENV === "production") {
+    server.use(sslRedirect());
+  }
+  
   server.all("*", (req, res) => {
     return handle(req, res);
   });

@@ -5,24 +5,15 @@ import { theme } from "../styles/theme";
 import React from "react";
 import Link from "next/link";
 import Head from "next/head";
-import { UserProvider, useFetchUser } from "../lib/user";
 import Layout from "../components/layout";
-import {
-  AppBar,
-  IconButton,
-  Typography,
-  Toolbar,
-  Menu,
-  MenuItem,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import { UserProvider } from "@auth0/nextjs-auth0";
 
 export default function App({ Component, pageProps }) {
-  const { user, loading } = useFetchUser();
+  const { user } = pageProps;
 
   return (
     <React.Fragment>
-      <UserProvider value={{ user, loading }}>
+      <UserProvider user={user}>
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />

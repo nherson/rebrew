@@ -5,9 +5,9 @@ import { useRequiredLogin } from "../lib/user";
 import { FullScreenLoading } from "../components/fullScreenLoading";
 
 export default function Home() {
-  const { loading } = useRequiredLogin();
+  const { isLoading } = useRequiredLogin();
 
-  if (loading) {
+  if (isLoading) {
     <FullScreenLoading />;
   }
 

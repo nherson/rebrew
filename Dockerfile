@@ -1,14 +1,19 @@
 FROM node:12-alpine
 
+ENV NODE_ENV production
+
 # Create app directory
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json /usr/src/app/
+COPY package-lock.json /usr/src/app/
+
+COPY . /usr/src/app
 
 RUN npm ci --only=production
 
-# Bundle app source
-COPY server.js ./
+RUN npm run build
 
 EXPOSE 3000
 

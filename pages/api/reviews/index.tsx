@@ -3,21 +3,19 @@ import Review from "../../../lib/models/review";
 import uuid from "../../../lib/uuid";
 import { ValidationError } from "sequelize";
 import { formatValidationError } from "../../../lib/errors";
-import auth0 from "../../../lib/auth";
 import { withDB } from "../../../lib/db";
+import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 
-export default withDB(
-  auth0.requireAuthentication(
-    async (req: NextApiRequest, res: NextApiResponse) => {
-      if (req.method === "GET") {
-        await get(req, res);
-      } else if (req.method === "POST") {
-        await post(req, res);
-      } else {
-        res.status(404).json({ error: "not found" });
-      }
+export default withApiAuthRequired(
+  withDB(async (req: NextApiRequest, res: NextApiResponse) => {
+    if (req.method === "GET") {
+      await get(req, res);
+    } else if (req.method === "POST") {
+      await post(req, res);
+    } else {
+      res.status(404).json({ error: "not found" });
     }
-  )
+  })
 );
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -25,7 +23,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await auth0.getSession(req);
+  const session = getSession(req, res);
   const review = new Review({
     id: uuid(),
     email: session.user.email,
