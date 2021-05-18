@@ -1,5 +1,3 @@
-import React from "react";
-import fetch from "isomorphic-unfetch";
 import Router from "next/router";
 import { useUser } from "@auth0/nextjs-auth0";
 

@@ -1,14 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Submission from "../../../lib/models/submission";
 import uuid from "../../../lib/uuid";
-import { ValidationError } from "sequelize";
-import { formatValidationError } from "../../../lib/errors";
-import { withDB } from "../../../lib/db";
 import _ from "lodash";
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
+import {
+  CreateSubmission,
+  ListAllSubmissions,
+  ListUserSubmissions,
+} from "../../../lib/dynamo";
 
 export default withApiAuthRequired(
-  withDB(async (req: NextApiRequest, res: NextApiResponse) => {
+  async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
       await get(req, res);
     } else if (req.method === "POST") {
@@ -16,26 +18,22 @@ export default withApiAuthRequired(
     } else {
       res.status(404).json({ error: "not found" });
     }
-  })
+  }
 );
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = getSession(req, res);
   let submissions: Submission[];
-  if (_.isNil(req.query.all)) {
-    // Only provide the user's submissions by default
-    submissions = await Submission.findAll({
-      where: {
-        email: session.user.email,
-      },
-    });
-  } else {
-    // Give all the submissions available but redact the email field (so it's anonymous)
-    submissions = await Submission.findAll({
-      attributes: {
-        exclude: ["email"],
-      },
-    });
+  try {
+    if (_.isNil(req.query.all)) {
+      submissions = await ListUserSubmissions(session.user.email);
+    } else {
+      submissions = await ListAllSubmissions();
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: "internal server error" });
+    return;
   }
 
   res.status(200).json(submissions);
@@ -43,21 +41,32 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = getSession(req, res);
-  const submission = new Submission({
+  const submission: Submission = {
     id: uuid(),
     email: session.user.email,
     ...req.body,
-  });
-  submission
-    .save()
-    .then((submission) => res.status(200).json(submission))
-    .catch((err) => {
-      if (err instanceof ValidationError) {
-        res.status(400).json({ errors: formatValidationError(err) });
-      } else {
-        // unknown error
-        console.log(err);
-        res.status(500).json({ errors: ["internal server error"] });
-      }
-    });
+  };
+
+  try {
+    await CreateSubmission(submission);
+    res.status(200).json(submission);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ errors: ["internal server error"] });
+    return;
+  }
+
+  // TODO: REIMPLEMENT VALIDATION
+  // submission
+  //   .save()
+  //   .then((submission) => res.status(200).json(submission))
+  //   .catch((err) => {
+  //     if (err instanceof ValidationError) {
+  //       res.status(400).json({ errors: formatValidationError(err) });
+  //     } else {
+  //       // unknown error
+  //       console.log(err);
+  //       res.status(500).json({ errors: ["internal server error"] });
+  //     }
+  //   });
 };
