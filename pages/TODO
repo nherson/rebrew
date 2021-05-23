@@ -1,0 +1,3 @@
+* Add admin context provider to top level of application DOM
+* Add admin buttons to dropdown in header
+* Basic admin page layout

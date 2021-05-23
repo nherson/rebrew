@@ -15,6 +15,7 @@ interface admin {
   isAdmin: boolean;
   error: Error | null;
 }
+
 export const useIsAdmin = (): admin => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
