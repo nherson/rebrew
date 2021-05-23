@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Typography, Grid, Box, Button } from "@material-ui/core";
 import React from "react";
-import { useRequiredLogin } from "../lib/user";
 import { FullScreenLoading } from "../components/fullScreenLoading";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { IsAdmin, useIsAdmin } from "../lib/admin";
 
-export default function Home() {
-  const { isLoading } = useRequiredLogin();
+const Home = function () {
+  const { isAdmin, isLoading } = useIsAdmin();
 
   if (isLoading) {
     <FullScreenLoading />;
@@ -39,6 +40,17 @@ export default function Home() {
           </Button>
         </Box>
       </Grid>
+      <Grid item xs={12}>
+        <Box paddingY={5} justifyContent="center" display="flex">
+          {isAdmin ? (
+            <Typography variant="h6">ADMIN USER</Typography>
+          ) : (
+            <Typography variant="h6">NOT ADMIN USER</Typography>
+          )}
+        </Box>
+      </Grid>
     </Grid>
   );
-}
+};
+
+export default withPageAuthRequired(Home);

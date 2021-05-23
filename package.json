@@ -1,13 +1,12 @@
 {
-  "name": "learn-starter",
+  "name": "rebrew",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "node server.js",
-    "heroku-postbuild": "npm run build",
-    "migrate": "node_modules/.bin/sequelize db:migrate"
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.3.0",
@@ -32,14 +31,9 @@
     "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.21",
     "next": "^10.2.0",
-    "pg": "^8.2.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "reflect-metadata": "^0.1.13",
-    "sequelize": "^5.22.3",
-    "sequelize-cli": "^6.2.0",
-    "sequelize-typescript": "^1.1.0",
-    "sqlite3": "^4.2.0",
     "styled-components": "^5.1.1",
     "swr": "^0.2.2",
     "typescript": "^4.2.4"
