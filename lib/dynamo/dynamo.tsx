@@ -1,13 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  DynamoDBDocument,
-  GetCommandInput,
-  PutCommandInput,
-  QueryCommandInput,
-  ScanCommandInput,
-} from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import _ from "lodash";
-import Submission from "../models/submission";
 
 export const SUBMISSIONS_TABLE_NAME =
   process.env.DYNAMODB_SUBMISSIONS_TABLE_NAME;
