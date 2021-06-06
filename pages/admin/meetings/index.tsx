@@ -9,6 +9,8 @@ import { useMeetings } from "../../../lib/api";
 import { FullScreenError } from "../../../components/fullScreenError";
 import _ from "lodash";
 import MeetingCard from "../../../components/meetingcard";
+import { DeleteMeeting } from "../../../lib/s3/s3";
+import { Refresh } from "@material-ui/icons";
 
 const Home = function () {
   const userAuth = useContext(AdminContext);
@@ -28,6 +30,19 @@ const Home = function () {
     return <FullScreenError text="Unable to fetch meetings information" />;
   }
 
+  const deleteHandler = (id: string) => {
+    return async () => {
+      await fetch(`/api/meetings/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        method: "DELETE",
+      });
+      meetingData.refresh();
+    };
+  };
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -39,7 +54,7 @@ const Home = function () {
       {_.map(meetingData.meetings, (m) => (
         <Grid item xs={12}>
           <Box paddingY={2} justifyContent="center" display="flex">
-            <MeetingCard meeting={m} />
+            <MeetingCard meeting={m} onDelete={deleteHandler(m.id)} />
           </Box>
         </Grid>
       ))}

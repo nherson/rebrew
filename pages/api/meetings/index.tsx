@@ -1,28 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Submission from "../../../lib/models/submission";
 import uuid from "../../../lib/uuid";
 import _ from "lodash";
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
-import {
-  CreateSubmission,
-  ListAllSubmissions,
-  ListUserSubmissions,
-} from "../../../lib/dynamo";
 import Meeting from "../../../lib/models/meetings";
 import { CreateMeeting, GetMeetings } from "../../../lib/s3/s3";
 import { IsAdmin } from "../../../lib/admin";
-
-// export default withApiAuthRequired(
-//   async (req: NextApiRequest, res: NextApiResponse) => {
-//     if (req.method === "GET") {
-//       await get(req, res);
-//     } else if (req.method === "POST") {
-//       await post(req, res);
-//     } else {
-//       res.status(404).json({ error: "not found" });
-//     }
-//   }
-// );
 
 export default withApiAuthRequired(
   async (req: NextApiRequest, res: NextApiResponse) => {

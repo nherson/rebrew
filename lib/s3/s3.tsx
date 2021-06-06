@@ -44,3 +44,26 @@ export const GetMeetings = async (): Promise<Meeting[]> => {
 
   return meetings;
 };
+
+export const DeleteMeeting = async (id: string) => {
+  const meetings = await GetMeetings();
+
+  console.log(meetings);
+  console.log(id);
+
+  const meeting = _.find(meetings, (m) => m.id === id);
+
+  if (!meeting) {
+    throw new Error("meeting not found");
+  }
+
+  const filteredMeetings = _.filter(meetings, (m) => m.id !== id);
+
+  const command = new PutObjectCommand({
+    Bucket: process.env.S3_MEETINGS_BUCKET_NAME,
+    Key: "meetings.json",
+    Body: JSON.stringify(filteredMeetings),
+  });
+
+  await client.send(command);
+};

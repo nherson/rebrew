@@ -89,8 +89,13 @@ export function useSubmission(id: string) {
 export function useMeetings() {
   const [loading, setLoading] = useState(true);
   const [meetings, setMeetings]: [Array<Meeting>, Dispatch<Array<Meeting>>] =
-    useState(null);
+    useState(new Array<Meeting>());
   const [error, setError] = useState(null);
+  const [refreshToggle, setRefreshToggle] = useState(false);
+
+  const refresh = () => {
+    setRefreshToggle(!refreshToggle);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,7 +108,7 @@ export function useMeetings() {
       setLoading(false);
     };
     fetchData();
-  }, []);
+  }, [refreshToggle]);
 
-  return { meetings, loading, error };
+  return { meetings, loading, error, refresh };
 }

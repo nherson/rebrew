@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   CardActions,
@@ -11,28 +12,48 @@ import Meeting from "../lib/models/meetings";
 
 interface MeetingCardProps {
   meeting: Meeting;
+  onDelete: () => void;
 }
-const MeetingCard = ({ meeting }: MeetingCardProps) => {
+const MeetingCard = ({ meeting, onDelete }: MeetingCardProps) => {
   return (
     <Card style={{ width: "100%" }} raised>
       <CardContent>
         <Typography variant="h6">{meeting.name}</Typography>
         <Typography>{meeting.location}</Typography>
         <Typography color="textSecondary" gutterBottom>
-          {formatMeetingDate(meeting.date)}
+          {formatMeetingDate(new Date(meeting.date))}
         </Typography>
+        <Box paddingY={0.5}>
+          <Button>Open to Submissions</Button>
+        </Box>
+        <Box paddingY={0.5}>
+          <Button>Open to Reviews</Button>
+        </Box>
+        <Box paddingY={0.5}>
+          <Button color="secondary">Complete Meeting</Button>
+        </Box>
+        <Box paddingY={0.5}>
+          <Button onClick={onDelete}>
+            <Typography variant="button" color="error">
+              Delete Meeting
+            </Typography>
+          </Button>
+        </Box>
       </CardContent>
-      <CardActions>
-        <Button color="secondary">Done</Button>
-        <Button>Open</Button>
-        <Button>Archive</Button>
-      </CardActions>
+      <CardActions></CardActions>
     </Card>
   );
 };
 
 const formatMeetingDate = (d: Date): string => {
-  return "Mon June 7 2021, 7pm";
+  return d.toLocaleDateString("en", {
+    weekday: "short",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
 };
 
 export default MeetingCard;

@@ -1,7 +1,7 @@
 class Meeting {
   id: string;
   name: string;
-  date: Date;
+  date: string;
   location: string;
   // createdBy?: string;
 }
