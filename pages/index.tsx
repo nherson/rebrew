@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { Typography, Grid, Box, Button } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
 import { FullScreenLoading } from "../components/fullScreenLoading";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { IsAdmin, useIsAdmin } from "../lib/admin";
+import { AdminContext } from "../lib/admin";
 
 const Home = function () {
-  const { isAdmin, isLoading } = useIsAdmin();
+  const userAuth = useContext(AdminContext);
 
-  if (isLoading) {
-    <FullScreenLoading />;
+  if (userAuth.isLoading) {
+    return <FullScreenLoading />;
   }
 
   return (

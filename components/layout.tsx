@@ -8,13 +8,18 @@ import {
   Link,
   MenuItem,
   Typography,
+  Divider,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import React from "react";
+import React, { useContext, useState } from "react";
+import { AdminContext } from "../lib/admin";
 
 export default function Layout({ children }) {
   // Handle menu clicks
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // Render admin buttons, if applicable
+  const adminAuth = useContext(AdminContext);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -43,6 +48,14 @@ export default function Layout({ children }) {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
+            {adminAuth.isAdmin && (
+              <>
+                <MenuItem>
+                  <a href="/admin/meetings">Manage Meetings</a>
+                </MenuItem>
+                <Divider />
+              </>
+            )}
             <MenuItem>
               <a href="/api/auth/logout">Logout</a>
             </MenuItem>
