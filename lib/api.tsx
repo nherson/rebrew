@@ -85,30 +85,3 @@ export function useSubmission(id: string) {
 
   return { submission, loading, error };
 }
-
-export function useMeetings() {
-  const [loading, setLoading] = useState(true);
-  const [meetings, setMeetings]: [Array<Meeting>, Dispatch<Array<Meeting>>] =
-    useState(new Array<Meeting>());
-  const [error, setError] = useState(null);
-  const [refreshToggle, setRefreshToggle] = useState(false);
-
-  const refresh = () => {
-    setRefreshToggle(!refreshToggle);
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resp = await axios("/api/meetings");
-        setMeetings(resp.data);
-      } catch (e) {
-        setError(e);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [refreshToggle]);
-
-  return { meetings, loading, error, refresh };
-}

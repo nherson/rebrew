@@ -5,7 +5,7 @@ import { FullScreenLoading } from "../../../components/fullScreenLoading";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import { AdminContext } from "../../../lib/admin";
 import { FullScreenForbidden } from "../../../components/fullScreenForbidden";
-import { useMeetings } from "../../../lib/api";
+import { useMeetings } from "../../../lib/api/client/meetings";
 import { FullScreenError } from "../../../components/fullScreenError";
 import _ from "lodash";
 import MeetingCard from "../../../components/meetingcard";
