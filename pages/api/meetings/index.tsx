@@ -38,9 +38,9 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
   const meeting: Meeting = {
-    id: uuid(),
     ...req.body,
   };
+  meeting.id = uuid();
 
   try {
     await CreateMeeting(meeting);

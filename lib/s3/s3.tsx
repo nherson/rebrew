@@ -42,7 +42,9 @@ export const GetMeetings = async (): Promise<Meeting[]> => {
 
   const meetings: Meeting[] = JSON.parse(await resp.text());
 
-  return meetings;
+  return _.sortBy(meetings, "date");
+
+  // return meetings;
 };
 
 export const DeleteMeeting = async (id: string) => {

@@ -9,10 +9,9 @@ import { useMeetings } from "../../../lib/api/client/meetings";
 import { FullScreenError } from "../../../components/fullScreenError";
 import _ from "lodash";
 import MeetingCard from "../../../components/meetingcard";
-import { DeleteMeeting } from "../../../lib/s3/s3";
-import { Refresh } from "@material-ui/icons";
+import Router from "next/router";
 
-const Home = function () {
+const MeetingsList = function () {
   const userAuth = useContext(AdminContext);
 
   if (userAuth.isLoading) {
@@ -31,7 +30,9 @@ const Home = function () {
   }
 
   const deleteHandler = (id: string) => {
+    console.log("generating callback: ", id);
     return async () => {
+      console.log("deleting: ", id);
       await fetch(`/api/meetings/${id}`, {
         headers: {
           "Content-Type": "application/json",
@@ -41,6 +42,10 @@ const Home = function () {
       });
       meetingData.refresh();
     };
+  };
+
+  const newMeetingHandler = () => {
+    Router.push("/admin/meetings/new");
   };
 
   return (
@@ -58,8 +63,20 @@ const Home = function () {
           </Box>
         </Grid>
       ))}
+
+      <Grid item xs={12}>
+        <Box paddingY={2} justifyContent="center" display="flex">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={newMeetingHandler}
+          >
+            New Meeting
+          </Button>
+        </Box>
+      </Grid>
     </Grid>
   );
 };
 
-export default withPageAuthRequired(Home);
+export default withPageAuthRequired(MeetingsList);

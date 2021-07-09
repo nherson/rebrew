@@ -1,12 +1,6 @@
-import Head from "next/head";
-import Link from "next/link";
 import Router from "next/router";
-import Layout from "../../components/layout";
 import {
-  Container,
   Box,
-  Typography,
-  ButtonGroup,
   Grid,
   FormControl,
   Select,
@@ -14,14 +8,13 @@ import {
   MenuItem,
   FormHelperText,
   TextField,
-  TextareaAutosize,
+  Link,
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import React, { useState } from "react";
 import _ from "lodash";
 import fetch from "../../lib/fetch";
 import { useRequiredLogin } from "../../lib/user";
-import Submission from "../../lib/models/submission";
 import { styles } from "../../lib/bjcp";
 
 function NewSubmission() {

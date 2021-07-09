@@ -16,6 +16,7 @@ import { FullScreenForbidden } from "../../../components/fullScreenForbidden";
 import _ from "lodash";
 import { CreateMeeting } from "../../../lib/api/client/meetings";
 import { FullScreenError } from "../../../components/fullScreenError";
+import Router from "next/router";
 
 const handleEvent =
   (cb: (_: string) => void) =>
@@ -57,7 +58,7 @@ const NewMeeting = function () {
         openToReviews: false,
         openToSubmissions: false,
       });
-      Router.push("/meetings");
+      Router.push("/admin/meetings");
     } catch (e) {
       setError(e);
     }
