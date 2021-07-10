@@ -4,30 +4,66 @@ import {
   Card,
   CardActions,
   CardContent,
+  Switch,
   Typography,
 } from "@material-ui/core";
 import _ from "lodash";
 import React from "react";
-import Meeting from "../lib/models/meetings";
+import Meeting, { IMeeting } from "../lib/models/meetings";
 
 interface MeetingCardProps {
-  meeting: Meeting;
+  meeting: IMeeting;
   onDelete: () => void;
+  onToggleOpenToReviews: () => void;
+  onToggleOpenToSubmissions: () => void;
 }
-const MeetingCard = ({ meeting, onDelete }: MeetingCardProps) => {
+const MeetingCard = ({
+  meeting,
+  onDelete,
+  onToggleOpenToReviews,
+  onToggleOpenToSubmissions,
+}: MeetingCardProps) => {
   return (
     <Card style={{ width: "100%" }} raised>
       <CardContent>
         <Typography variant="h6">{meeting.name}</Typography>
         <Typography>{meeting.location}</Typography>
         <Typography color="textSecondary" gutterBottom>
-          {formatMeetingDate(new Date(meeting.date))}
+          {new Meeting(meeting).formatDate()}
         </Typography>
-        <Box paddingY={0.5}>
-          <Button>Open to Submissions</Button>
+        <Box
+          paddingY={0.5}
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+        >
+          <Box>
+            <Switch
+              checked={meeting.openToSubmissions}
+              value={meeting.openToSubmissions}
+              onClick={onToggleOpenToSubmissions}
+            />
+          </Box>
+          <Box>
+            <Typography>Open to submissions</Typography>
+          </Box>
         </Box>
-        <Box paddingY={0.5}>
-          <Button>Open to Reviews</Button>
+        <Box
+          paddingY={0.5}
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+        >
+          <Box>
+            <Switch
+              checked={meeting.openToReviews}
+              value={meeting.openToReviews}
+              onClick={onToggleOpenToReviews}
+            />
+          </Box>
+          <Box>
+            <Typography>Open to reviews</Typography>
+          </Box>
         </Box>
         <Box paddingY={0.5}>
           <Button color="secondary">Complete Meeting</Button>
@@ -43,17 +79,6 @@ const MeetingCard = ({ meeting, onDelete }: MeetingCardProps) => {
       <CardActions></CardActions>
     </Card>
   );
-};
-
-const formatMeetingDate = (d: Date): string => {
-  return d.toLocaleDateString("en", {
-    weekday: "short",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
 };
 
 export default MeetingCard;

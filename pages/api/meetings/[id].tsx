@@ -8,26 +8,21 @@ import {
   ListAllSubmissions,
   ListUserSubmissions,
 } from "../../../lib/dynamo";
-import Meeting from "../../../lib/models/meetings";
-import { CreateMeeting, DeleteMeeting, GetMeetings } from "../../../lib/s3/s3";
+import Meeting, { IMeeting } from "../../../lib/models/meetings";
+import {
+  CreateMeeting,
+  DeleteMeeting,
+  GetMeetings,
+  UpdateMeeting,
+} from "../../../lib/s3/s3";
 import { IsAdmin } from "../../../lib/admin";
-
-// export default withApiAuthRequired(
-//   async (req: NextApiRequest, res: NextApiResponse) => {
-//     if (req.method === "GET") {
-//       await get(req, res);
-//     } else if (req.method === "POST") {
-//       await post(req, res);
-//     } else {
-//       res.status(404).json({ error: "not found" });
-//     }
-//   }
-// );
 
 export default withApiAuthRequired(
   async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "DELETE") {
       await del(req, res);
+    } else if (req.method === "PUT") {
+      await put(req, res);
     } else {
       res.status(404).json({ error: "not found" });
     }
@@ -49,5 +44,37 @@ const del = async (req: NextApiRequest, res: NextApiResponse) => {
     console.log(e);
     res.status(500).json({ errors: ["internal server error"] });
   }
+  return;
+};
+
+const put = async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = getSession(req, res);
+  if (!IsAdmin(session.user.email)) {
+    res.status(403).json({ errors: ["access denied"] });
+    return;
+  }
+  const meetingId = req.query.id as string;
+
+  const meeting: IMeeting = {
+    ...req.body,
+  };
+
+  console.log(meeting);
+
+  if (meeting.id !== meetingId) {
+    res
+      .status(400)
+      .json({ errors: ["meeting id in url must match http body"] });
+    return;
+  }
+
+  try {
+    await UpdateMeeting(meeting);
+    res.status(200).json(meeting);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ errors: ["internal server error"] });
+  }
+
   return;
 };

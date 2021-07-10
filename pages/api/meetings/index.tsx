@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import uuid from "../../../lib/uuid";
 import _ from "lodash";
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
-import Meeting from "../../../lib/models/meetings";
+import Meeting, { IMeeting } from "../../../lib/models/meetings";
 import { CreateMeeting, GetMeetings } from "../../../lib/s3/s3";
 import { IsAdmin } from "../../../lib/admin";
 
@@ -19,7 +19,7 @@ export default withApiAuthRequired(
 );
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
-  let meetings: Meeting[];
+  let meetings: IMeeting[];
   try {
     meetings = await GetMeetings();
   } catch (e) {
@@ -37,7 +37,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(403).json({ errors: ["access denied"] });
     return;
   }
-  const meeting: Meeting = {
+  const meeting: IMeeting = {
     ...req.body,
   };
   meeting.id = uuid();

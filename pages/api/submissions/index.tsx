@@ -42,10 +42,11 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = getSession(req, res);
   const submission: Submission = {
-    id: uuid(),
-    email: session.user.email,
     ...req.body,
   };
+
+  submission.id = uuid();
+  submission.email = session.user.email;
 
   try {
     await CreateSubmission(submission);

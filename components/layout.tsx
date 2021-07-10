@@ -49,12 +49,12 @@ export default function Layout({ children }) {
             onClose={handleClose}
           >
             {adminAuth.isAdmin && (
-              <>
+              <div>
                 <MenuItem>
                   <a href="/admin/meetings">Manage Meetings</a>
                 </MenuItem>
                 <Divider />
-              </>
+              </div>
             )}
             <MenuItem>
               <a href="/api/auth/logout">Logout</a>

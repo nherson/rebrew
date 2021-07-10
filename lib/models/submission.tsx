@@ -7,6 +7,7 @@ class Submission {
   notes: string;
   email: string;
   reviews?: Review[];
+  meetingId: string;
 }
 
 export default Submission;

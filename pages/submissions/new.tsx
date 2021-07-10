@@ -13,16 +13,38 @@ import {
 import Button from "@material-ui/core/Button";
 import React, { useState } from "react";
 import _ from "lodash";
-import fetch from "../../lib/fetch";
 import { useRequiredLogin } from "../../lib/user";
 import { styles } from "../../lib/bjcp";
+import { useMeetings } from "../../lib/api/client/meetings";
+import { FullScreenLoading } from "../../components/fullScreenLoading";
+import { FullScreenError } from "../../components/fullScreenError";
+import Meeting from "../../lib/models/meetings";
 
-function NewSubmission() {
+const NewSubmission = () => {
   useRequiredLogin();
 
+  const [meetingId, setMeetingId] = useState("");
   const [name, setName] = useState("");
   const [style, setStyle] = useState("");
   const [notes, setNotes] = useState("");
+
+  const { meetings, loading, error } = useMeetings();
+  if (loading) {
+    return <FullScreenLoading />;
+  } else if (error) {
+    return <FullScreenError text={error.message} />;
+  } else if (meetings.length === 0) {
+    return (
+      <FullScreenError
+        text="No meetings currently available to register a submission for."
+        backButton
+      />
+    );
+  } else if (meetingId === "") {
+    setMeetingId(meetings[0].id);
+  }
+
+  const canSubmit = meetingId !== "" && name !== "" && style !== "";
 
   // TODO: move meat of this to api module
   const submit = function () {
@@ -30,6 +52,7 @@ function NewSubmission() {
       name: name,
       style: style,
       notes: notes,
+      meetingId: meetingId,
     };
     fetch("/api/submissions", {
       headers: {
@@ -44,12 +67,16 @@ function NewSubmission() {
     // TODO: handle errors
   };
 
-  const handleStyleChange = (event) => {
-    setStyle(event.target.value);
+  const handleMeetingIdChange = (event) => {
+    setMeetingId(event.target.value);
   };
 
   const handleNameChange = (event) => {
     setName(event.target.value);
+  };
+
+  const handleStyleChange = (event) => {
+    setStyle(event.target.value);
   };
 
   const handleNotesChange = (event) => {
@@ -58,6 +85,31 @@ function NewSubmission() {
 
   return (
     <Grid container direction="column" style={{ minHeight: "80vh" }}>
+      <Grid item>
+        <Box paddingY={1}></Box>
+        {/* Hack for a touch of vertical spacing */}
+      </Grid>
+      <Grid item>
+        <FormControl fullWidth>
+          <InputLabel htmlFor="meeting-id">Meeting</InputLabel>
+          <Select
+            labelId="select-meeting-id"
+            id="select-meeting-id"
+            value={meetingId}
+            onChange={handleMeetingIdChange}
+            fullWidth
+            required
+          >
+            {_.map(meetings, (meeting, i) => {
+              return (
+                <MenuItem value={meeting.id} key={"meeting-" + i}>
+                  {meeting.name}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      </Grid>
       <Grid item>
         <FormControl fullWidth>
           <TextField
@@ -117,17 +169,20 @@ function NewSubmission() {
       >
         <Box>
           <Button color="primary">
-            <Link href="/">
-              <a>Cancel</a>
-            </Link>
+            <Link href="/">Cancel</Link>
           </Button>
-          <Button color="primary" onClick={submit} variant="contained">
+          <Button
+            color="primary"
+            disabled={!canSubmit}
+            onClick={submit}
+            variant="contained"
+          >
             Submit
           </Button>
         </Box>
       </Grid>
     </Grid>
   );
-}
+};
 
 export default NewSubmission;

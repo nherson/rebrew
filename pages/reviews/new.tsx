@@ -23,7 +23,6 @@ import {
 import Button from "@material-ui/core/Button";
 import React, { useState } from "react";
 import _, { escapeRegExp } from "lodash";
-import fetch from "../../lib/fetch";
 import { useRequiredLogin } from "../../lib/user";
 import { useSubmissions } from "../../lib/api";
 import useDescriptors from "../../lib/descriptors";

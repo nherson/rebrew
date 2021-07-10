@@ -1,12 +1,13 @@
 import axios from "axios";
+import _ from "lodash";
 import { Dispatch, useEffect, useState } from "react";
-import Meeting from "../../models/meetings";
+import Meeting, { IMeeting } from "../../models/meetings";
 
 export function useMeetings() {
   const [loading, setLoading] = useState(true);
-  const [meetings, setMeetings]: [Array<Meeting>, Dispatch<Array<Meeting>>] =
-    useState(new Array<Meeting>());
-  const [error, setError] = useState(null);
+  const [meetings, setMeetings]: [Array<IMeeting>, Dispatch<Array<IMeeting>>] =
+    useState(new Array<IMeeting>());
+  const [error, setError] = useState<Error | null>(null);
   const [refreshToggle, setRefreshToggle] = useState(false);
 
   const refresh = () => {
@@ -17,7 +18,7 @@ export function useMeetings() {
     const fetchData = async () => {
       try {
         const resp = await axios("/api/meetings");
-        setMeetings(resp.data);
+        setMeetings(_.map(resp.data as IMeeting[]));
       } catch (e) {
         setError(e);
       }
@@ -30,7 +31,7 @@ export function useMeetings() {
 }
 
 // Returns a promise to create a meeting
-export const CreateMeeting = async (meeting: Meeting) => {
+export const CreateMeeting = async (meeting: IMeeting) => {
   await fetch("/api/meetings", {
     headers: {
       "Content-Type": "application/json",
