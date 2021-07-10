@@ -33,6 +33,7 @@ import SubmissionCard from "../../components/submissioncard";
 import { FullScreenLoading } from "../../components/fullScreenLoading";
 import { FullScreenError } from "../../components/fullScreenError";
 import { FullScreenErrorUnexpected } from "../../components/fullScreenErrorUnexpected";
+import { useSubmissionsOpenToReviews } from "../../lib/api/client/submissions";
 
 const aromaName = "aroma";
 const appearanceName = "appearance";
@@ -76,9 +77,7 @@ function ReviewPage() {
   };
 
   // State for choosing a submission to review
-  const { submissions, loading, error } = useSubmissions({
-    userOnly: false,
-  });
+  const { submissions, loading, error } = useSubmissionsOpenToReviews();
   const [submission, setSubmission] = useState(null);
   const handleSelectSubmission = (s) => {
     setSubmission(s);

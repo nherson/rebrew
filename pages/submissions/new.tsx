@@ -15,7 +15,10 @@ import React, { useState } from "react";
 import _ from "lodash";
 import { useRequiredLogin } from "../../lib/user";
 import { styles } from "../../lib/bjcp";
-import { useMeetings } from "../../lib/api/client/meetings";
+import {
+  useMeetings,
+  useMeetingsOpenToSubmissions,
+} from "../../lib/api/client/meetings";
 import { FullScreenLoading } from "../../components/fullScreenLoading";
 import { FullScreenError } from "../../components/fullScreenError";
 import Meeting from "../../lib/models/meetings";
@@ -28,7 +31,7 @@ const NewSubmission = () => {
   const [style, setStyle] = useState("");
   const [notes, setNotes] = useState("");
 
-  const { meetings, loading, error } = useMeetings();
+  const { meetings, loading, error } = useMeetingsOpenToSubmissions();
   if (loading) {
     return <FullScreenLoading />;
   } else if (error) {

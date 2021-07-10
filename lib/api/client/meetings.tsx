@@ -30,6 +30,16 @@ export function useMeetings() {
   return { meetings, loading, error, refresh };
 }
 
+export const useMeetingsOpenToSubmissions = () => {
+  const { meetings, loading, error } = useMeetings();
+
+  return {
+    meetings: _.filter(meetings, (m) => m.openToSubmissions),
+    loading,
+    error,
+  };
+};
+
 // Returns a promise to create a meeting
 export const CreateMeeting = async (meeting: IMeeting) => {
   await fetch("/api/meetings", {

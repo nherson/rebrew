@@ -82,5 +82,6 @@ const submissionFromAttributeMap = (attrs: dynamoAttributeMap): Submission => {
     name: attrs["name"] as string,
     notes: attrs["notes"] as string,
     email: attrs["email"] as string,
+    meetingId: attrs["meetingId"] as string,
   };
 };
