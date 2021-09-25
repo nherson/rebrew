@@ -1,6 +1,8 @@
 import Router from "next/router";
 import {
   Box,
+  Button,
+  Checkbox,
   Grid,
   FormControl,
   Select,
@@ -9,8 +11,8 @@ import {
   FormHelperText,
   TextField,
   Link,
+  FormControlLabel,
 } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
 import React, { useState } from "react";
 import _ from "lodash";
 import { useRequiredLogin } from "../../lib/user";
@@ -29,6 +31,7 @@ const NewSubmission = () => {
   const [meetingId, setMeetingId] = useState("");
   const [name, setName] = useState("");
   const [style, setStyle] = useState("");
+  const [quantityAck, setQuantityAck] = useState(false);
   const [notes, setNotes] = useState("");
 
   const { meetings, loading, error } = useMeetingsOpenToSubmissions();
@@ -47,7 +50,8 @@ const NewSubmission = () => {
     setMeetingId(meetings[0].id);
   }
 
-  const canSubmit = meetingId !== "" && name !== "" && style !== "";
+  const canSubmit =
+    meetingId !== "" && name !== "" && style !== "" && quantityAck;
 
   // TODO: move meat of this to api module
   const submit = function () {
@@ -86,6 +90,10 @@ const NewSubmission = () => {
     setNotes(event.target.value);
   };
 
+  const handleQuantityAckChange = () => {
+    setQuantityAck(!quantityAck);
+  };
+
   return (
     <Grid container direction="column" style={{ minHeight: "80vh" }}>
       <Grid item>
@@ -117,13 +125,13 @@ const NewSubmission = () => {
         <FormControl fullWidth>
           <TextField
             onChange={handleNameChange}
-            label="Name"
+            label="Beer Name"
             id="beer-name"
             fullWidth
             required
           />
           <FormHelperText>
-            e.g. "Plinky the Middle Child" or "Hop Soup!"
+            e.g. "Plinky the Middle Child" or "Hop Soup!" (not your name!)
           </FormHelperText>
         </FormControl>
       </Grid>
@@ -148,6 +156,13 @@ const NewSubmission = () => {
           </Select>
           <FormHelperText>What this beer most closely resembles</FormHelperText>
         </FormControl>
+      </Grid>
+      <Grid item>
+        <FormControlLabel
+          control={<Checkbox />}
+          label="I can bring 64oz of my homebrew"
+          onChange={handleQuantityAckChange}
+        />
       </Grid>
       <Grid item>
         <FormControl fullWidth>
