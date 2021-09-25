@@ -8,6 +8,9 @@ class Submission {
   email: string;
   reviews?: Review[];
   meetingId: string;
+  containsNuts?: string;
+  containsDairy?: string;
+  containsFruit?: string;
 }
 
 export default Submission;

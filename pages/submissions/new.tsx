@@ -17,13 +17,9 @@ import React, { useState } from "react";
 import _ from "lodash";
 import { useRequiredLogin } from "../../lib/user";
 import { styles } from "../../lib/bjcp";
-import {
-  useMeetings,
-  useMeetingsOpenToSubmissions,
-} from "../../lib/api/client/meetings";
+import { useMeetingsOpenToSubmissions } from "../../lib/api/client/meetings";
 import { FullScreenLoading } from "../../components/fullScreenLoading";
 import { FullScreenError } from "../../components/fullScreenError";
-import Meeting from "../../lib/models/meetings";
 
 const NewSubmission = () => {
   useRequiredLogin();
@@ -32,6 +28,19 @@ const NewSubmission = () => {
   const [name, setName] = useState("");
   const [style, setStyle] = useState("");
   const [quantityAck, setQuantityAck] = useState(false);
+
+  const [allergensPresent, setAllergensPresent] = useState(false);
+
+  // allergen toggles
+  const [nutsPresent, setNutsPresent] = useState(false);
+  const [dairyPresent, setDairyPresent] = useState(false);
+  const [fruitPresent, setFruitPresent] = useState(false);
+
+  // allergen specifics
+  const [nuts, setNuts] = useState<string>("");
+  const [dairy, setDairy] = useState<string>("");
+  const [fruit, setFruit] = useState<string>("");
+
   const [notes, setNotes] = useState("");
 
   const { meetings, loading, error } = useMeetingsOpenToSubmissions();
@@ -51,7 +60,13 @@ const NewSubmission = () => {
   }
 
   const canSubmit =
-    meetingId !== "" && name !== "" && style !== "" && quantityAck;
+    meetingId !== "" &&
+    name !== "" &&
+    style !== "" &&
+    quantityAck &&
+    (!nutsPresent || nuts !== "") &&
+    (!dairyPresent || dairy !== "") &&
+    (!fruitPresent || fruit !== "");
 
   // TODO: move meat of this to api module
   const submit = function () {
@@ -60,7 +75,21 @@ const NewSubmission = () => {
       style: style,
       notes: notes,
       meetingId: meetingId,
+      containsNuts: null,
+      containsDairy: null,
+      containsFruit: null,
     };
+
+    if (nutsPresent) {
+      submission.containsNuts = nuts;
+    }
+    if (dairyPresent) {
+      submission.containsDairy = dairy;
+    }
+    if (fruitPresent) {
+      submission.containsFruit = fruit;
+    }
+
     fetch("/api/submissions", {
       headers: {
         "Content-Type": "application/json",
@@ -92,6 +121,34 @@ const NewSubmission = () => {
 
   const handleQuantityAckChange = () => {
     setQuantityAck(!quantityAck);
+  };
+
+  const handleAllergensPresentChange = () => {
+    setAllergensPresent(!allergensPresent);
+  };
+
+  const handleNutsPresentChange = () => {
+    setNutsPresent(!nutsPresent);
+  };
+
+  const handleDairyPresentChange = () => {
+    setDairyPresent(!dairyPresent);
+  };
+
+  const handleFruitPresentChange = () => {
+    setFruitPresent(!fruitPresent);
+  };
+
+  const handleNutsChange = (event) => {
+    setNuts(event.target.value);
+  };
+
+  const handleDairyChange = (event) => {
+    setDairy(event.target.value);
+  };
+
+  const handleFruitChange = (event) => {
+    setFruit(event.target.value);
   };
 
   return (
@@ -165,6 +222,44 @@ const NewSubmission = () => {
         />
       </Grid>
       <Grid item>
+        <FormControlLabel
+          control={<Checkbox />}
+          label="This homebrew contains nuts, dairy, or fruit"
+          onChange={handleAllergensPresentChange}
+        />
+      </Grid>
+      {allergensPresent && (
+        <Grid item>
+          <Box marginX={2}>
+            <Box marginY={1}>
+              <AllergenCheckbox
+                name="Nuts"
+                present={nutsPresent}
+                onToggle={handleNutsPresentChange}
+                onSpecify={handleNutsChange}
+              />
+            </Box>
+            <Box marginY={1}>
+              <AllergenCheckbox
+                name="Dairy"
+                present={dairyPresent}
+                onToggle={handleDairyPresentChange}
+                onSpecify={handleDairyChange}
+              />
+            </Box>
+            <Box marginY={1}>
+              <AllergenCheckbox
+                name="Fruit"
+                present={fruitPresent}
+                onToggle={handleFruitPresentChange}
+                onSpecify={handleFruitChange}
+              />
+            </Box>
+          </Box>
+        </Grid>
+      )}
+
+      <Grid item>
         <FormControl fullWidth>
           <TextField
             multiline
@@ -200,6 +295,43 @@ const NewSubmission = () => {
         </Box>
       </Grid>
     </Grid>
+  );
+};
+
+interface AllergenCheckboxProps {
+  name: string;
+  present: boolean;
+  onToggle: () => void;
+  onSpecify: (event: any) => void;
+}
+const AllergenCheckbox = ({
+  name,
+  present,
+  onSpecify,
+  onToggle,
+}: AllergenCheckboxProps) => {
+  return (
+    <Box display="flex" flexDirection="right" alignItems="top">
+      <Box>
+        <FormControlLabel
+          control={<Checkbox />}
+          label={name}
+          onChange={onToggle}
+        />
+      </Box>
+      {present && (
+        <Box>
+          <FormControl>
+            <TextField
+              onChange={onSpecify}
+              label={`Specify ${name.toLowerCase()}`}
+              id={`allergen-${name}`}
+              required
+            />
+          </FormControl>
+        </Box>
+      )}
+    </Box>
   );
 };
 

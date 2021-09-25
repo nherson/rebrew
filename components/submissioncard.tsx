@@ -4,11 +4,16 @@ import {
   Typography,
   CardActions,
   Button,
+  Divider,
+  Box,
+  Icon,
 } from "@material-ui/core";
 import { styles } from "../lib/bjcp";
 import Submission from "../lib/models/submission";
 import _ from "lodash";
 import Link from "next/link";
+import React from "react";
+import { Warning } from "@material-ui/icons";
 
 interface SubmissionCardProps {
   submission: Submission;
@@ -45,17 +50,79 @@ const SubmissionCard = ({
   return (
     <Card style={{ width: "100%" }} raised>
       <CardContent>
-        <Typography variant="h6">{submission.name}</Typography>
-        <Typography color="textSecondary" gutterBottom>
-          {submission.style} - {styles[submission.style]}
-        </Typography>
-        <Typography color="textSecondary">Notes</Typography>
-        <Typography variant="body2" component="p">
-          {submission.notes === "" ? "N/A" : submission.notes}
-        </Typography>
+        <Box>
+          <Typography variant="h6">{submission.name}</Typography>
+          <Typography color="textSecondary" gutterBottom>
+            {submission.style} - {styles[submission.style]}
+          </Typography>
+        </Box>
+
+        {containsAllergen(submission) && (
+          <>
+            <Box marginY={2}>
+              <Divider />
+            </Box>
+            <Box>
+              <Box display="flex" flexDirection="right">
+                <Box marginRight={1}>
+                  <Warning color="error" />
+                </Box>
+                <Box>
+                  <Typography>Allergen Warnings</Typography>
+                </Box>
+              </Box>
+              {submission.containsNuts !== null && (
+                <Box marginX={2} display="flex" flexDirection="right">
+                  <Typography variant="body2">
+                    <strong>Nuts:</strong>
+                    {` ${submission.containsNuts}`}
+                  </Typography>
+                </Box>
+              )}
+              {submission.containsDairy !== null && (
+                <Box marginX={2} display="flex" flexDirection="right">
+                  <Typography variant="body2">
+                    <strong>Dairy:</strong>
+                    {` ${submission.containsDairy}`}
+                  </Typography>
+                </Box>
+              )}
+              {submission.containsFruit !== null && (
+                <Box marginX={2} display="flex" flexDirection="right">
+                  <Typography variant="body2">
+                    <strong>Fruit:</strong>
+                    {` ${submission.containsFruit}`}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </>
+        )}
+
+        {submission.notes && (
+          <>
+            <Box marginY={2}>
+              <Divider />
+            </Box>
+            <Box>
+              <Typography>Notes</Typography>
+              <Typography variant="body2" component="p">
+                {submission.notes === "" ? "N/A" : submission.notes}
+              </Typography>
+            </Box>
+          </>
+        )}
       </CardContent>
       <CardActions>{button}</CardActions>
     </Card>
+  );
+};
+
+const containsAllergen = (submission: Submission): boolean => {
+  return (
+    submission.containsNuts !== null ||
+    submission.containsDairy !== null ||
+    submission.containsFruit !== null
   );
 };
 
