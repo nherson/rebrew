@@ -13,3 +13,4 @@ Tech stack
 * MaterialUI frontend components
 * Auth0 for authN (more robust authZ tbd)
 * DynamoDB storage layer
+* Fly.io hosting/deployments
